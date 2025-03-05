@@ -1,13 +1,24 @@
-import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS } from '../queries'
+import { useMutation, useQuery } from '@apollo/client'
+import { ALL_AUTHORS, EDIT_BORN } from '../queries'
 import PropTypes from 'prop-types'
+import { useState } from 'react'
 
 const Authors = (props) => {
+  const [name, setName] = useState('')
+  const [born, setBorn] = useState('')
+
+  const result = useQuery(ALL_AUTHORS)
+
+  const [editBorn] = useMutation(EDIT_BORN)
+  const handleChangeBorn = async () => {
+    const result = await editBorn({ variables: { name, bornyear: Number(born) } })
+    console.log(result)
+  }
+
   if (!props.show) {
     return null
   }
 
-  const result = useQuery(ALL_AUTHORS)
   if (result.loading) {
     return <div>Loading...</div>
   }
@@ -32,6 +43,17 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+
+      <h3>Set birthyear</h3>
+      <div>
+        name <input value={name} onChange={(event) => setName(event.target.value)} />
+      </div>
+      <div>
+        born <input value={born} onChange={(event) => setBorn(event.target.value)} />
+      </div>
+      <div>
+        <button onClick={handleChangeBorn}>change birthyear</button>
+      </div>
     </div>
   )
 }
