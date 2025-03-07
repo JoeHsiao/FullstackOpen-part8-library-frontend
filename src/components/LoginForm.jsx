@@ -9,11 +9,12 @@ const LoginForm = ({ show, setToken, onLogin }) => {
   const [login, result] = useMutation(LOGIN)
 
   useEffect(() => {
-    console.log('useEffect in LoginForm', result)
     if (result.data) {
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('books-user-token', token)
+      setUsername('')
+      setPassword('')
       onLogin()
     }
   }, [result.data])
