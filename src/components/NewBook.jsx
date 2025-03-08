@@ -9,25 +9,23 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  // const updateGenreCache = (cache, response, genre) => {
-  //   cache.updateQuery({
-  //     query: ALL_BOOKS,
-  //     variables: { genre: genre }
-  //   }, (data) => {
-  //     if (!data)
-  //       return null
-  //     console.log('allbooks', data)
-  //     console.log('response', response)
-  //     return {
-  //       allBooks: data.allBooks.concat(response.data.addBook)
-  //     }
-  //   })
-  // }
-  const [addBook] = useMutation(ADD_BOOK)
-  //   update: (cache, response) => {
-  //     genres.map(x => updateGenreCache(cache, response, x))
-  //   }
-  // })
+  const updateBooksCache = (cache, response) => {
+    genres.concat(null).map(genre => {
+      cache.updateQuery({
+        query: ALL_BOOKS,
+        variables: genre ? { genre: genre } : null
+      }, (existingCache) => {
+        if (!existingCache)
+          return null
+        return {
+          allBooks: existingCache.allBooks.concat(response.data.addBook)
+        }
+      })
+    })
+  }
+  const [addBook] = useMutation(ADD_BOOK, {
+    update: updateBooksCache
+  })
 
   const submit = async (event) => {
     event.preventDefault()

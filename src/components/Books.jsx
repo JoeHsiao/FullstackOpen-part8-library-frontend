@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 
 const Books = (props) => {
   const [filterGenre, setFilterGenre] = useState('')
-  const [getAllBooks, result] = useLazyQuery(ALL_BOOKS, { fetchPolicy: 'network-only' })
+  const [getAllBooks, result] = useLazyQuery(ALL_BOOKS)
 
   useEffect(() => {
     if (props.show) {
@@ -26,7 +26,7 @@ const Books = (props) => {
   const books = result.data.allBooks
   return (
     <div>
-      <h2>books in genre '{filterGenre}'</h2>
+      <h2>books in genre <em>{filterGenre}</em></h2>
 
       <table>
         <tbody>
