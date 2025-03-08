@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { ADD_BOOK, ALL_BOOKS } from '../queries'
+import { ADD_BOOK } from '../queries'
 import { useMutation } from '@apollo/client'
+import { addBookToCache } from '../subscritions'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -9,22 +10,10 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const updateBooksCache = (cache, response) => {
-    genres.concat(null).map(genre => {
-      cache.updateQuery({
-        query: ALL_BOOKS,
-        variables: genre ? { genre: genre } : null
-      }, (existingCache) => {
-        if (!existingCache)
-          return null
-        return {
-          allBooks: existingCache.allBooks.concat(response.data.addBook)
-        }
-      })
-    })
-  }
   const [addBook] = useMutation(ADD_BOOK, {
-    update: updateBooksCache
+    update: (cache, response) => {
+      addBookToCache(cache, response.data.addBook)
+    }
   })
 
   const submit = async (event) => {
