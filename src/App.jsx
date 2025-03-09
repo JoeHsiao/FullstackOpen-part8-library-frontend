@@ -17,7 +17,7 @@ const App = () => {
     onData: ({ data }) => {
       addBookToCache(client.cache, data.data.bookAdded)
       console.log(data)
-      window.alert(`New book ${data.data.bookAdded}`)
+      window.alert(`New book ${data.data.bookAdded.title}`)
     }
   })
 
